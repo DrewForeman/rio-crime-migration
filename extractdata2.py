@@ -2,7 +2,8 @@ import csv
 import os
 
 
-pre_2011_dir = '/Users/drewforeman/Documents/rioexp/opendirs_test/Pre2011'          #something is wrong in DO201009-look at csvs
+pre_2011_dir = '/Users/drewforeman/Documents/rioexp/opendirs_test/Pre2011' 
+inter_2011_dir = '/Users/drewforeman/Documents/rioexp/opendirs_test/Inter2011'         
 pos_2011_dir = '/Users/drewforeman/Documents/rioexp/opendirs_test/Pos2011'
 
              
@@ -35,14 +36,14 @@ def traverse_and_touch(directory, touch):                           # Inside the
             and filename!='RISP-Table 1.csv' and filename !='Errata-Table 1.csv' and filename!='ERRATA-Table 1.csv':
                 value = touch(os.path.join(root, filename))
                 new_list.append(value)                                                                                          
-        # print new_list
+
         final_list.append(new_list)
-    # print final_list
+
     return final_list
 
 
 
-def reconfig_region_pos2011(jumbled_regions):                       # Rio's crime reporting regions were redistricted in 2011.
+def reconfig_region_pos2011(jumbled_regions):                       # Rio's crime reporting regions were redistricted in July 2011.
                                                                     # This function reconfigures the distribution of post-2011 regions
     jumbled_regions.remove([])                                      # so that they can be compared to pre-2011 data.
                                                                     # For info on how the districts changed and how I accounted for this 
@@ -61,14 +62,9 @@ def reconfig_region_pos2011(jumbled_regions):                       # Rio's crim
         item[34] = 'x'
     
     for item in jumbled_regions:
-        for i in item:
-            if i == 'x':
-                item.remove(i)
+        for i in xrange(item.count('x')):
+            item.remove('x')
 
-    for item in jumbled_regions:
-        del item[-1]
-
-    # print jumbled_regions
     return jumbled_regions
    
 
@@ -76,9 +72,33 @@ def reconfig_region_pos2011(jumbled_regions):                       # Rio's crim
 def reconfig_region_pre2011(jumbled_regions):                       # And this function reconfigures the pre-2011 regions for 
                                                                     # comparison with the reconfigured post-2011 data.
     jumbled_regions.remove([])
+    
+    for item in jumbled_regions:
+        item[3] = (item[0]+item[3]+item[4]+item[5]+item[12])/5
+        item[27] = (item[27]+item[36])/2
+        item[26] = (item[26]+item[38])/2
+    
+    for item in jumbled_regions:
+        item[0] = 'x'
+        item[4] = 'x'
+        item[5] = 'x'
+        item[12] = 'x'
+        item[36] = 'x'
+        item[38] = 'x'
+
+    for item in jumbled_regions:
+        for i in xrange(item.count('x')):
+            item.remove('x')
+
+    return jumbled_regions
+
+def reconfig_region_inter2011(jumbled_regions):
+    
+    jumbled_regions.remove([])
 
     for item in jumbled_regions:
         item[3] = (item[0]+item[3]+item[4]+item[5]+item[12])/5
+        item[8] = (item[8]+item[40])/2
         item[27] = (item[27]+item[36])/2
         item[26] = (item[26]+item[38])/2
 
@@ -89,31 +109,28 @@ def reconfig_region_pre2011(jumbled_regions):                       # And this f
         item[12] = 'x'
         item[36] = 'x'
         item[38] = 'x'
+        item[40] = 'x'
     
     for item in jumbled_regions:
-        for i in item:
-            if i == 'x':
-                item.remove(i)
+        for i in xrange(item.count('x')):
+            item.remove('x')
 
-    for item in jumbled_regions:
-        del item[-1]
-
-    # print jumbled_regions
     return jumbled_regions
 
 
-
-extracted_data_pre2011 = reconfig_region_pos2011(traverse_and_touch(pre_2011_dir, extractmurders))
-
+extracted_data_pre2011 = reconfig_region_pre2011(traverse_and_touch(pre_2011_dir, extractmurders))
+extracted_data_inter2011 = reconfig_region_inter2011(traverse_and_touch(inter_2011_dir, extractmurders))
 extracted_data_pos2011 = reconfig_region_pos2011(traverse_and_touch(pos_2011_dir, extractmurders))
 
 
 print extracted_data_pre2011
+print extracted_data_inter2011
 print extracted_data_pos2011
 
 
 with open("output.csv", "wb") as f:
     writer = csv.writer(f)
     writer.writerows(extracted_data_pre2011)
+    writer.writerows(extracted_data_inter2011)
     writer.writerows(extracted_data_pos2011)
 

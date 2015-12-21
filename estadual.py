@@ -9,12 +9,12 @@ def access_murders(file):
     with open(file) as f1:
         alldata = csv.reader(f1)
         alldata = list(alldata)
-        murders = [float(alldata[6][5]), float(alldata[6][7]), float(alldata[6][9]), float(alldata[6][11])]
+        murders = [alldata[6][5], alldata[6][7], alldata[6][9], alldata[6][11]]
     return murders
 
 
 
-def access_drugs(file):                                                                 #need to fix this one so that it reads the two dif lines 
+def access_drugs(file):                                             
     with open(file) as f1:
         alldata = csv.reader(f1)
         alldata = list(alldata)
@@ -43,9 +43,9 @@ def access_AdR(file):
         alldata = csv.reader(f1)
         alldata = list(alldata)
         if alldata[38][0] == '':
-            AdR = [float(alldata[50][5]), float(alldata[50][7]),float(alldata[50][9]), float(alldata[50][11])]
+            AdR = [alldata[50][5], alldata[50][7], alldata[50][9], alldata[50][11]]
         else:
-            AdR = [float(alldata[49][5]), float(alldata[49][7]),float(alldata[49][9]), float(alldata[49][11])]
+            AdR = [alldata[49][5], alldata[49][7], alldata[49][9], alldata[49][11]]
     return AdR
 
 
@@ -74,7 +74,6 @@ def access_roubos(file):
 
 
 def agg_data(file,function):
-    # new_list = []
 
     files=glob.glob(main_dir)   
     new_list = []
@@ -87,15 +86,14 @@ def agg_data(file,function):
         and file != '/Users/drewforeman/Documents/rioexp/Estadual_Data/estadual_AdR.csv'\
         and file != '/Users/drewforeman/Documents/rioexp/Estadual_Data/estadual_arms.csv':
 
-        # print file 
             value = function(file)
             new_list.append(value)
 
     return new_list
 
 
-def clean_strdata(given_list):                                                      # fixes the problem of data that has tabs and commas
-    clean_list = []                                                                 # and cannot be read as a float
+def clean_strdata(given_list):                                             # fixes the problem of data that has tabs and commas
+    clean_list = []                                                        # and cannot be read as a float
     for pt in given_list:
         sub_list = []
         for item in pt:
@@ -103,15 +101,13 @@ def clean_strdata(given_list):                                                  
             for i in item:
                 if i == '\t' or i == ',' or i ==' ':
                     item.remove(i)
-            sub_list.append(float(''.join(item)))
+            sub_list.append(int(float(''.join(item))))
         clean_list.append(sub_list)
     return clean_list
 
-    # return new_list
 
-# print agg_data(main_dir)
 
-murder_data = agg_data(main_dir,access_murders)
+murder_data = clean_strdata(agg_data(main_dir,access_murders))
 murder_titles = ['Capital Murder', 'Baixada Murder', 'Niteroi Murder', 'Interior Murder']
 print murder_titles
 print murder_data,'\n'
@@ -147,7 +143,7 @@ with open("estadual_arms.csv", "wb") as f:
 
 
 
-AdR_data = agg_data(main_dir,access_AdR)
+AdR_data = clean_strdata(agg_data(main_dir,access_AdR))
 AdR_titles = ['Capital AdR', 'Baixada AdR', 'Niteroi AdR', 'Interior AdR']
 print AdR_titles
 print AdR_data,'\n'
