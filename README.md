@@ -1,5 +1,4 @@
 # Rio_Data_Project
-Project for Hackbright Intro Course
 
 A data visualization project focusing on the geographic distribution of crime in Rio de Janeiro after the implementation of the UPP project.
 
