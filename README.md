@@ -1,4 +1,4 @@
-# Rio_Data_Project
+# Rio Crime Migration Visualization
 
 A data visualization project focusing on the geographic distribution of crime in Rio de Janeiro after the implementation of the UPP project.
 
